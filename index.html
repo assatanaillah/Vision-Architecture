@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Vision Architecture Session — Divinity Embodied</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --blush: #F5E4E4;
+    --blush-deep: #EDD4D0;
+    --blush-light: #FAF5F2;
+    --rose: #C46B5A;
+    --rose-soft: #D4877A;
+    --gold: #9A7835;
+    --gold-light: #C4A052;
+    --charcoal: #2A1F1E;
+    --brown: #6B4F47;
+    --brown-light: #9E7A72;
+    --cream: #FDF6F0;
+    --warm-white: #FFFAF7;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Cormorant Garamond', Georgia, serif; background: var(--cream); color: var(--brown); overflow-x: hidden; }
+
+  /* SHARED */
+  section { padding: 96px 24px; }
+  .container { max-width: 740px; margin: 0 auto; }
+  .container-wide { max-width: 960px; margin: 0 auto; }
+
+  .tag {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+  .tag::before, .tag::after {
+    content: '';
+    height: 1px;
+    width: 48px;
+    background: linear-gradient(to right, transparent, var(--gold-light), transparent);
+  }
+  .tag.left { justify-content: flex-start; }
+  .tag.left::before { display: none; }
+
+  h2 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(24px, 4.5vw, 42px);
+    font-weight: 400;
+    color: var(--charcoal);
+    line-height: 1.25;
+    margin-bottom: 28px;
+  }
+  h2 em { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; color: var(--rose); }
+
+  p.body { font-size: clamp(18px, 2.2vw, 22px); font-weight: 300; line-height: 1.85; color: var(--brown); margin-bottom: 22px; }
+
+  .pull {
+    font-size: clamp(20px, 3vw, 28px);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--rose);
+    line-height: 1.55;
+    border-left: 2px solid var(--rose);
+    padding: 20px 0 20px 36px;
+    margin: 48px 0;
+  }
+
+  .divider { text-align: center; color: var(--gold-light); font-family: 'Cinzel', serif; font-size: 18px; letter-spacing: 0.4em; padding: 12px 0; opacity: 0.7; }
+
+  .btn {
+    display: inline-block;
+    background: var(--rose);
+    color: var(--warm-white);
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 18px 48px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+    border: none;
+    cursor: pointer;
+  }
+  .btn:hover { background: var(--charcoal); }
+  .btn.outline {
+    background: transparent;
+    border: 1px solid var(--brown-light);
+    color: var(--brown);
+  }
+  .btn.outline:hover { background: var(--brown); color: var(--warm-white); }
+  .btn.gold-btn { background: var(--gold); }
+  .btn.gold-btn:hover { background: var(--charcoal); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background: var(--charcoal);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 80px 24px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(154,120,53,0.12) 0%, transparent 70%);
+  }
+  .hero-inner { position: relative; z-index: 2; max-width: 720px; }
+  .brand { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.3em; color: var(--gold-light); text-transform: uppercase; margin-bottom: 52px; opacity: 0; animation: up 0.9s ease forwards 0.2s; }
+  .hero h1 { font-family: 'Cinzel', serif; font-size: clamp(28px, 5.5vw, 56px); font-weight: 400; color: var(--warm-white); line-height: 1.15; margin-bottom: 8px; opacity: 0; animation: up 0.9s ease forwards 0.5s; }
+  .hero h1 em { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; color: var(--gold-light); display: block; font-size: clamp(24px, 4.5vw, 48px); }
+  .hero-sub { font-size: clamp(17px, 2.2vw, 22px); font-weight: 300; color: rgba(253,248,245,0.72); line-height: 1.75; margin: 32px auto; max-width: 520px; font-style: italic; opacity: 0; animation: up 0.9s ease forwards 0.8s; }
+  .hero-price { font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold-light); letter-spacing: 0.2em; margin-bottom: 36px; opacity: 0; animation: up 0.9s ease forwards 1s; }
+  .hero-cta { opacity: 0; animation: up 0.9s ease forwards 1.1s; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .hero-note { font-size: 13px; color: rgba(253,248,245,0.45); font-style: italic; }
+
+  /* EMPIRE — THE PROBLEM */
+  .empire { background: var(--charcoal); }
+  .empire .tag { color: var(--gold-light); }
+  .empire .tag::before, .empire .tag::after { background: linear-gradient(to right, transparent, var(--gold-light), transparent); }
+  .empire h2 { color: var(--warm-white); }
+  .empire h2 em { color: var(--rose-soft); }
+  .empire p.body { color: rgba(253,248,245,0.78); }
+  .empire .pull { color: var(--blush-deep); border-left-color: var(--rose-soft); }
+
+  .symptom-list { list-style: none; margin: 36px 0; display: flex; flex-direction: column; gap: 0; }
+  .symptom-list li {
+    font-size: clamp(17px, 2vw, 20px);
+    font-style: italic; font-weight: 300;
+    color: rgba(253,248,245,0.7);
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .symptom-list li::before { content: '—'; color: var(--rose-soft); flex-shrink: 0; }
+
+  /* EARTH — THE SHIFT */
+  .earth { background: var(--warm-white); text-align: center; }
+
+  /* SOUL — WHO THIS IS FOR */
+  .soul { background: var(--blush); }
+
+  .for-list { list-style: none; margin: 40px 0; display: flex; flex-direction: column; gap: 24px; }
+  .for-list li {
+    font-size: clamp(18px, 2.1vw, 21px);
+    font-weight: 300; font-style: italic;
+    color: var(--brown);
+    line-height: 1.65;
+    display: flex; align-items: flex-start; gap: 18px;
+  }
+  .for-list li .dot { color: var(--rose); font-style: normal; font-family: 'Cinzel', serif; font-size: 14px; flex-shrink: 0; margin-top: 3px; }
+
+  /* THE SESSION — $444 OFFER */
+  .session-offer { background: var(--cream); text-align: center; }
+
+  .session-box {
+    background: var(--warm-white);
+    border: 1px solid var(--blush-deep);
+    max-width: 680px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .session-box-top { background: var(--charcoal); padding: 52px 48px 40px; }
+  .session-box-top .tag { color: var(--gold-light); }
+  .session-box-top .tag::before, .session-box-top .tag::after { background: linear-gradient(to right, transparent, var(--gold-light), transparent); }
+  .session-box-top h3 { font-family: 'Cinzel', serif; font-size: clamp(24px, 4vw, 36px); font-weight: 400; color: var(--warm-white); margin-bottom: 12px; }
+  .session-box-top p { font-size: 18px; font-style: italic; color: rgba(253,248,245,0.7); line-height: 1.7; }
+
+  .session-box-body { padding: 48px; }
+  .session-box-body p.body { text-align: left; }
+
+  .includes-list { list-style: none; margin: 32px 0; display: flex; flex-direction: column; gap: 0; }
+  .includes-list li {
+    display: flex; gap: 18px; align-items: flex-start;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--blush-deep);
+    font-size: clamp(16px, 1.8vw, 18px);
+    color: var(--brown);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+  .includes-list li .arrow { color: var(--rose); flex-shrink: 0; font-family: 'Cinzel', serif; font-size: 13px; margin-top: 3px; }
+  .includes-list li strong { color: var(--charcoal); font-weight: 500; }
+
+  .price-display { text-align: center; margin: 40px 0 32px; }
+  .price-big { font-family: 'Cinzel', serif; font-size: 56px; color: var(--rose); font-weight: 400; display: block; }
+  .price-sub { font-size: 14px; color: var(--brown-light); font-style: italic; margin-top: 6px; }
+
+  /* SPIRIT */
+  .spirit {
+    background: var(--charcoal);
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .spirit::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(154,120,53,0.1) 0%, transparent 70%);
+  }
+  .spirit .container { position: relative; z-index: 2; }
+  .spirit .tag { color: var(--gold-light); }
+  .spirit .tag::before, .spirit .tag::after { background: linear-gradient(to right, transparent, var(--gold-light), transparent); }
+  .spirit h2 { color: var(--warm-white); }
+  .spirit h2 em { color: var(--gold-light); }
+  .spirit p.body { color: rgba(253,248,245,0.78); }
+
+  .truth { font-family: 'Cinzel', serif; font-size: clamp(16px, 2.5vw, 22px); color: var(--gold-light); letter-spacing: 0.06em; line-height: 1.7; margin: 48px auto; max-width: 560px; }
+
+  /* ACCELERATOR */
+  .accelerator { background: var(--blush); text-align: center; }
+
+  .accel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2px; background: var(--blush-deep); margin: 52px 0; }
+  .accel-card { background: var(--warm-white); padding: 40px 32px; text-align: left; transition: background 0.3s ease; }
+  .accel-card:hover { background: var(--blush-light); }
+  .accel-card-num { font-family: 'Cinzel', serif; font-size: 10px; color: var(--gold); letter-spacing: 0.3em; margin-bottom: 14px; display: block; }
+  .accel-card h4 { font-family: 'Cinzel', serif; font-size: 17px; color: var(--charcoal); font-weight: 400; margin-bottom: 10px; }
+  .accel-card p { font-size: 15px; font-weight: 300; color: var(--brown-light); line-height: 1.65; font-style: italic; }
+
+  .accel-box {
+    background: var(--charcoal);
+    padding: 56px 48px;
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .accel-box .tag { color: var(--gold-light); }
+  .accel-box .tag::before, .accel-box .tag::after { background: linear-gradient(to right, transparent, var(--gold-light), transparent); }
+  .accel-box h3 { font-family: 'Cinzel', serif; font-size: clamp(22px, 3.5vw, 32px); color: var(--warm-white); font-weight: 400; margin-bottom: 24px; }
+  .accel-box p { font-size: 17px; font-weight: 300; font-style: italic; color: rgba(253,248,245,0.75); line-height: 1.75; margin-bottom: 16px; }
+
+  .structure-list { list-style: none; text-align: left; margin: 32px 0; display: flex; flex-direction: column; gap: 0; }
+  .structure-list li {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-size: 16px; font-weight: 300;
+    color: rgba(253,248,245,0.78);
+    line-height: 1.6;
+  }
+  .structure-list li::before { content: '✦'; color: var(--gold-light); flex-shrink: 0; font-size: 10px; margin-top: 5px; }
+
+  .investment { margin: 40px 0 32px; }
+  .inv-main { font-family: 'Cinzel', serif; font-size: 42px; color: var(--gold-light); display: block; margin-bottom: 8px; }
+  .inv-alt { font-size: 16px; color: rgba(253,248,245,0.55); font-style: italic; }
+  .inv-note { font-size: 14px; color: rgba(253,248,245,0.45); font-style: italic; margin-top: 16px; }
+
+  /* FINAL CTA */
+  .final { background: var(--blush-deep); text-align: center; }
+  .final h2 { color: var(--charcoal); }
+
+  .bonus-box {
+    background: linear-gradient(135deg, var(--charcoal) 0%, #3d2825 100%);
+    border: 1px solid var(--gold);
+    padding: 48px;
+    text-align: center;
+    position: relative;
+  }
+  .bonus-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .bonus-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(20px, 3vw, 28px);
+    color: var(--warm-white);
+    font-weight: 400;
+    margin-bottom: 20px;
+  }
+  .bonus-body {
+    font-size: clamp(16px, 1.9vw, 19px);
+    font-weight: 300;
+    color: rgba(253,248,245,0.78);
+    line-height: 1.8;
+    max-width: 580px;
+    margin: 0 auto;
+  }
+
+  .limited-banner {
+    background: var(--rose);
+    padding: 56px 24px;
+    text-align: center;
+  }
+  .limited-banner .lim-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: rgba(253,248,245,0.7);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .limited-banner h3 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(22px, 3.5vw, 34px);
+    color: var(--warm-white);
+    font-weight: 400;
+    line-height: 1.3;
+    margin-bottom: 20px;
+  }
+  .limited-banner h3 em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    display: block;
+    font-size: 0.85em;
+    opacity: 0.9;
+  }
+  .limited-banner p {
+    font-size: clamp(17px, 2vw, 20px);
+    font-weight: 300;
+    color: rgba(253,248,245,0.88);
+    line-height: 1.75;
+    max-width: 560px;
+    margin: 0 auto 36px;
+  }
+  .btn.white-btn {
+    background: var(--warm-white);
+    color: var(--rose);
+    font-family: 'Cinzel', serif;
+  }
+  .btn.white-btn:hover { background: var(--charcoal); color: var(--warm-white); }
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+  .d1 { transition-delay: 0.1s; } .d2 { transition-delay: 0.2s; } .d3 { transition-delay: 0.3s; } .d4 { transition-delay: 0.4s; }
+
+  @keyframes up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+  @media (max-width: 600px) { section { padding: 72px 20px; } .session-box-body, .accel-box { padding: 32px 24px; } .session-box-top { padding: 40px 24px 32px; } }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <p class="brand">Assata Na'illah · Divinity Embodied</p>
+    <h1>The Vision<br><em>Architecture Session</em></h1>
+    <p class="hero-sub">90 minutes. One session. Complete clarity on your vision, your blocks dissolved, and a concrete roadmap to execute with ease, speed, and precision.</p>
+    <div class="hero-cta">
+      <a href="https://shop.beacons.ai/divinielyguided/4864819f-4b64-4d5d-8263-4b6f1db02e39" class="btn">Book Your Session — $444</a>
+      <p class="hero-note">Ready to go deeper? The Visionary Architect Accelerator is below.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- EMPIRE — THE PROBLEM -->
+<section class="empire">
+  <div class="container">
+    <div class="tag reveal">Empire Realm · Where We Begin</div>
+    <h2 class="reveal d1">You already know what you're here to build.<br><em>So why does it keep feeling this hard?</em></h2>
+
+    <p class="body reveal d2">You have the vision. You have the gifts. You have moments of such profound clarity that you can taste exactly what your life and work are meant to look like. And then something — some invisible force — keeps the full expression of it just out of reach.</p>
+
+    <ul class="symptom-list reveal d3">
+      <li>You're doing the inner work but the outer results aren't reflecting your level of consciousness yet.</li>
+      <li>You have a big vision but can't seem to translate it into a coherent, executable plan that actually feels aligned.</li>
+      <li>You know your gifts are powerful but something — a block, a belief, a pattern you can't quite name — keeps holding you back from the results you know are possible.</li>
+      <li>You've been circling the same territory for months. The breakthrough feels close. But you can't get there alone.</li>
+      <li>Your business works but it doesn't feel like you yet. There's friction somewhere and you know it's costing you.</li>
+    </ul>
+
+    <div class="pull reveal">
+      "The gap between your vision and your reality is not a strategy problem. It is not a hustle problem. Something deeper is out of alignment — and that can shift far faster than you think."
+    </div>
+
+    <p class="body reveal d1">This is what I was created to do. Not to give you a generic plan or a templated strategy. To look at the full architecture of your vision — the spiritual, the embodied, the structural, the executable — and show you exactly where the signal is breaking down. And then help you dissolve it. In the room. In real time.</p>
+  </div>
+</section>
+
+
+<!-- EARTH — THE BODY KNOWS -->
+<section class="earth">
+  <div class="container">
+    <div class="tag reveal">Earth Realm · The Real Work</div>
+    <h2 class="reveal d1">Most coaches help you think differently.<br><em>This session helps you become different.</em></h2>
+
+    <p class="body reveal d2">There is a reason why you can receive insight after insight — can understand, intellectually, exactly what needs to shift — and still find yourself living the same patterns six months later. The body holds the pattern. The nervous system carries the frequency. And until the shift lands at that level, it stays in the realm of knowing rather than being.</p>
+
+    <p class="body reveal d3">In 90 minutes together we are working at every level simultaneously — the spiritual identity, the embodied frequency, the structural architecture, and the concrete execution. My specialty is instantaneous dissolution. The blocks that feel like they've been with you forever. The beliefs you've been working on for years. In the right container, with the right transmission, they release fast.</p>
+
+    <div class="pull reveal" style="text-align:left;">
+      I don't just help you see it. I help you feel it resolve in your body, so when you leave, you are genuinely different — not just more informed.
+    </div>
+  </div>
+</section>
+
+
+<!-- SOUL — WHO THIS IS FOR -->
+<section class="soul">
+  <div class="container">
+    <div class="tag reveal">Soul Realm · Is This You?</div>
+    <h2 class="reveal d1" style="text-align:center;">This session is for the visionary who<br><em>is done circling and ready to land.</em></h2>
+
+    <ul class="for-list reveal d2">
+      <li><span class="dot">✦</span> You are a coach, creator, entrepreneur, or artist with a mission that is bigger than a business — and you need help architecting it into a form the world can actually receive.</li>
+      <li><span class="dot">✦</span> You have been doing your inner work and you are ready for someone who can meet you at your level, see your vision clearly, and show you the next concrete step forward.</li>
+      <li><span class="dot">✦</span> You have a specific block, decision, or breakthrough you've been circling — and you want it dissolved. Today. In one session.</li>
+      <li><span class="dot">✦</span> You are ready to stop trading your energy for breadcrumbs and start building a business that is an actual expression of your genius.</li>
+      <li><span class="dot">✦</span> Something in you already knows this is the right move. You felt it when you landed on this page. That is the body giving you the answer before the mind has finished deliberating.</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- SPIRIT — THE TRUTH -->
+<section class="spirit">
+  <div class="container">
+    <div class="tag reveal">Spirit Realm · The Foundation</div>
+    <h2 class="reveal d1">Your vision is not a goal.<br><em>It is a divine assignment.</em></h2>
+
+    <p class="body reveal d2">Everything I do — every framework, every session, every transmission — is built on one foundational truth: your desires are not arbitrary. They are divine assignments — pointing you toward the life you were created to live.</p>
+
+    <div class="truth reveal d3">
+      The vision was given to you<br>
+      because you are the one equipped to fulfill it.<br>
+      The Architecture Session is where we make that real.
+    </div>
+
+    <p class="body reveal">I channel divine architecture — systems and frameworks that mirror the actual principles of how consciousness creates reality. The Frequency Formula, The Serenity System, Inner Wealth — these are not theories I discovered. They are living transmissions that I have applied to my own life and refined through every client I have worked with. In one session, you receive the distilled power of all of it — applied specifically to you, your vision, your body, your blocks, your next move.</p>
+  </div>
+</section>
+
+
+<!-- THE SESSION — $444 OFFER -->
+<section class="session-offer" id="session">
+  <div class="container">
+    <div class="tag reveal">Your Investment</div>
+    <h2 class="reveal d1" style="text-align:center;">Everything you receive<br><em>in one session.</em></h2>
+  </div>
+
+  <div class="container">
+    <div class="session-box reveal d2">
+      <div class="session-box-top">
+        <div class="tag">The Vision Architecture Session</div>
+        <h3>90 Minutes. One Shift. A New Trajectory.</h3>
+        <p>A private intensive with Assata Na'illah — Vision Architect & Embodiment Coach</p>
+      </div>
+      <div class="session-box-body">
+        <ul class="includes-list">
+          <li><span class="arrow">→</span><div><strong>Full Vision Architecture reading</strong> — I look at your vision holistically across all four realms (Spirit, Soul, Earth, Empire) and show you exactly where your energy is leaking and what's keeping your results stuck</div></li>
+          <li><span class="arrow">→</span><div><strong>Instantaneous block dissolution</strong> — we identify exactly where the misalignment is, dissolve it on the call, and architect a clear plan for you to execute with ease, speed, and precision.</div></li>
+          <li><span class="arrow">→</span><div><strong>Zone of Genius mapping</strong> — your most natural, most powerful, highest-leverage zone of genius identified and translated into a concrete strategy</div></li>
+          <li><span class="arrow">→</span><div><strong>Aligned business simplification</strong> — your offers, energy architecture, and structure recalibrated to create maximum impact with minimum friction</div></li>
+          <li><span class="arrow">→</span><div><strong>Your full embodied roadmap</strong> — a written architecture of exactly what to do on a spiritual, somatic, structural, and execution level to achieve your most desired shift</div></li>
+          <li><span class="arrow">→</span><div><strong>90 minutes of full presence</strong> — no templates, no scripts, no generic advice. Pure transmission applied to you specifically</div></li>
+        </ul>
+
+        <div class="price-display">
+          <span class="price-big">$444</span>
+          <p class="price-sub">One-time investment · Session via Zoom · Roadmap delivered within 24 hours</p>
+        </div>
+
+        <div style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px;">
+          <a href="https://shop.beacons.ai/divinielyguided/4864819f-4b64-4d5d-8263-4b6f1db02e39" class="btn">Book Your Vision Architecture Session</a>
+          <p style="font-size:14px; color:var(--brown-light); font-style:italic;">Spaces are limited. Each session is prepared specifically for you.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- LIMITED TIME BONUS -->
+<section class="limited-banner">
+  <div class="container">
+    <p class="lim-tag reveal">✦ &nbsp; Limited Time Offer &nbsp; ✦</p>
+    <h3 class="reveal d1">Book your session now and receive<br><em>one free month inside the Divine Architect Academy</em></h3>
+    <p class="reveal d2">For a limited time, every Vision Architecture Session comes with a complimentary month inside the Divine Architect Academy — a living community of visionaries doing this exact work. Weekly co-creation sessions. Monthly group coaching. Live transmissions. The collective energy that makes your momentum feel effortless. Join the session, enter the community. See what it feels like to not build alone.</p>
+    <a href="https://shop.beacons.ai/divinielyguided/4864819f-4b64-4d5d-8263-4b6f1db02e39" class="btn white-btn reveal d3">Claim Your Session + Free Month — $444</a>
+  </div>
+</section>
+
+
+<!-- ACCELERATOR BRIDGE -->
+<section style="background: var(--warm-white); padding: 80px 24px; text-align:center;">
+  <div class="container">
+    <div class="divider reveal">✦ · ✦</div>
+    <br><br>
+    <h2 class="reveal d1" style="font-size: clamp(20px, 3vw, 30px); color: var(--brown-light); font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic;">One session opens the door.<br>For those ready to walk fully through it —</h2>
+    <br>
+    <p class="body reveal d2" style="max-width:560px; margin:0 auto; font-style:italic; color:var(--brown-light);">The Vision Architecture Session will show you the full map of your vision and dissolve your most immediate blocks. Some clients take that roadmap and run. Others feel called to go deeper — to have consistent support as they move through the full descent. That is what the Visionary Architect Accelerator was built for.</p>
+  </div>
+</section>
+
+
+<!-- ACCELERATOR — $8K OFFER -->
+<section class="accelerator">
+  <div class="container">
+    <div class="tag reveal">For Those Ready to Go All In</div>
+    <h2 class="reveal d1">The Visionary Architect Accelerator</h2>
+    <p class="body reveal d2" style="max-width:640px; margin:0 auto 24px; text-align:center;">Imagine waking up four months from now in a life that actually matches the vision you've been carrying. Not a version of it. The actual thing — the freedom, the income, the ease, the deep knowing that you are exactly where you are supposed to be, doing exactly what you were created to do.</p>
+    <p class="body reveal d3" style="max-width:640px; margin:0 auto 24px; text-align:center;">Your business is no longer something you manage around your life. It is an expression of it. The offers are clear. The systems hold everything so you don't have to. The clients are aligned. The money moves. And you — you are not exhausted by any of it. You are energized. Because for the first time, everything is built around who you actually are.</p>
+    <p class="body reveal" style="max-width:640px; margin:0 auto 24px; text-align:center;">The blocks that have been with you for years — the ones that made you question your worth, your readiness, your right to want what you want — are gone. Not suppressed. Dissolved. You trust yourself in a way you have never trusted yourself before. You make decisions quickly and from your body. You take action from overflow. And the results that used to feel like they were always just out of reach start arriving with a regularity that stops surprising you — because you have become the version of yourself who simply lives like this now.</p>
+    <p class="body reveal d1" style="max-width:600px; margin:0 auto; text-align:center; font-style:italic; color:var(--brown-light);">That is what four months inside this container is designed to produce. Not as a possibility. As an inevitability — when you show up and do the work.</p>
+  </div>
+
+  <div class="container-wide">
+    <div class="accel-grid reveal d2">
+      <div class="accel-card">
+        <span class="accel-card-num">Weeks 1–8 · The Foundation</span>
+        <h4>Four Immersive Intensives</h4>
+        <p>Four deep-dive architectural sessions covering Expansion, the Frequency Formula, the Serenity System, and Inner Wealth. We move you through the full descent — Spirit through Soul through body into the structure of your actual life and business. This is where everything gets rebuilt from the inside out.</p>
+      </div>
+      <div class="accel-card">
+        <span class="accel-card-num">Weeks 9–16 · The Collapse</span>
+        <h4>Biweekly Refinement Sessions</h4>
+        <p>You implement. We recalibrate together. Every two weeks we meet to strengthen your identity, dissolve whatever resistance has arisen, and collapse the timeline between where you are and where you're going. This is where the vision stops being theoretical and starts being your daily reality.</p>
+      </div>
+      <div class="accel-card">
+        <span class="accel-card-num">Throughout · Your Infrastructure</span>
+        <h4>Your Complete Life & Business Operating System</h4>
+        <p>I build you a fully customized Notion workspace — your entire life and business architecture in one place. Your zone of genius mapped. Your offers organized. Your weekly rhythm designed around your energy. Your goals tracked. Your vision alive and in front of you every single day so consistency becomes natural, not forced.</p>
+      </div>
+      <div class="accel-card">
+        <span class="accel-card-num">Throughout · Direct Access</span>
+        <h4>DM Access + Weekly Strategic Feedback</h4>
+        <p>You are never building alone. Direct messaging access inside your private workspace means the support is there when you need it — between sessions, in the moments that matter, when the decision has to be made right now. Weekly strategic feedback keeps your momentum building.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BONUS -->
+  <div class="container" style="margin-top: 4px;">
+    <div class="bonus-box reveal d2">
+      <div class="bonus-tag">✦ &nbsp; Included Bonus &nbsp; ✦</div>
+      <h4 class="bonus-title">Full Access to the Divine Architect Academy</h4>
+      <p class="bonus-body">For the full duration of your container, you are also inside the Divine Architect Academy — a living community of visionaries doing this exact work alongside you. Weekly co-creation sessions. Monthly group coaching. Live transmissions. The energy of a collective that is building, growing, and materializing in real time. You get the private depth of 1:1 work AND the momentum of community. Both at once.</p>
+    </div>
+  </div>
+
+  <div class="container" style="margin-top: 4px;">
+    <div class="accel-box reveal d2">
+      <div class="tag">The Investment</div>
+      <h3>The Visionary Architect Accelerator</h3>
+      <p>Four months. Entirely private. Built around you, your vision, and the life you are here to live.</p>
+
+      <ul class="structure-list">
+        <li>Four immersive intensive sessions — Expansion, Frequency Formula, Serenity System, Inner Wealth</li>
+        <li>Biweekly refinement + timeline collapse sessions — weeks 9–16</li>
+        <li>Your complete custom life & business operating system built in Notion</li>
+        <li>Weekly strategic feedback and accountability</li>
+        <li>Direct messaging access throughout your container</li>
+        <li>Full Divine Architect Academy membership for the duration of your container</li>
+      </ul>
+
+      <div class="investment">
+        <span class="inv-main">$8,200</span>
+        <p class="inv-alt">or $2,222 × 4 months</p>
+      </div>
+
+      <a href="https://assatanaillah.com/shop/a83795b3-8b69-4ecc-8be4-2f2b679bf788" class="btn gold-btn" style="display:inline-block; margin-bottom:20px;">Apply for the Accelerator</a>
+
+      <p class="inv-note">To apply, a short alignment call is required — so we can establish genuine rapport, answer each other's questions, and confirm we are the right fit. There is an $82 application fee to schedule this call, which is applied in full toward your investment.</p>
+      <p class="inv-note" style="margin-top:12px;">✦ &nbsp; The Vision Architecture Session counts as your alignment call. If you book a session and feel called to the Accelerator, your $444 is applied in full toward your investment.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- FINAL CTA -->
+<section class="final">
+  <div class="container">
+    <div class="divider reveal" style="color:var(--gold);">✦</div>
+    <br><br>
+    <h2 class="reveal d1">Your vision has been waiting<br><em>for you to say yes to it.</em></h2>
+    <br>
+    <p class="body reveal d2" style="max-width:520px; margin:0 auto 40px; font-style:italic; color:var(--brown-light);">One session. One shift. One roadmap that finally makes the path clear. This is where you stop wondering and start knowing.</p>
+    <a href="https://shop.beacons.ai/divinielyguided/4864819f-4b64-4d5d-8263-4b6f1db02e39" class="btn reveal d3">Book Your Vision Architecture Session — $444</a>
+    <br><br>
+    <p class="reveal d4" style="font-size:13px; color:var(--brown-light); font-style:italic; margin-top:12px;">Divinity Embodied · Assata Na'illah · Vision Architect & Embodiment Coach</p>
+  </div>
+</section>
+
+<script>
+  const els = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); }), { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  els.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
